@@ -16,6 +16,7 @@ import json
 import os
 import sys
 
+import numpy as np
 from PIL import Image
 
 WHITE_MIN = 247      # 纯白下限, 留 8 点容差
@@ -37,9 +38,9 @@ def check(path):
     samples = {}
     for name, (x, y) in corners.items():
         box = im.crop((x, y, x + s, y + s))
-        px = list(box.getdata())
+        px = np.asarray(box).reshape(-1, 3)
         n = len(px)
-        med = [sorted(c[i] for c in px)[n // 2] for i in range(3)]
+        med = [int(sorted(px[:, i].tolist())[n // 2]) for i in range(3)]
         samples[name] = med
     vals = [v for med in samples.values() for v in med]
     corner_min = min(vals)
@@ -47,10 +48,8 @@ def check(path):
 
     # 边缘一圈: 有多少比例不是白, 用来抓产品出血/投影
     edge = []
-    edge += list(im.crop((0, 0, w, 6)).getdata())
-    edge += list(im.crop((0, h - 6, w, h)).getdata())
-    edge += list(im.crop((0, 0, 6, h)).getdata())
-    edge += list(im.crop((w - 6, 0, w, h)).getdata())
+    for crop in ((0, 0, w, 6), (0, h - 6, w, h), (0, 0, 6, h), (w - 6, 0, w, h)):
+        edge.extend(np.asarray(im.crop(crop)).reshape(-1, 3).tolist())
     non_white = sum(1 for p in edge if min(p) < WHITE_MIN)
 
     return {

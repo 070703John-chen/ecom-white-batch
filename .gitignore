@@ -1,0 +1,9 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.DS_Store
+Thumbs.db
+_white_batch_report.json
+_white_check.md
