@@ -1,0 +1,4 @@
+interface:
+  display_name: "批量白底"
+  short_description: "把一批已有商品图一条命令转成 1:1 纯白交付图并给出 n/N 报告"
+  default_prompt: "用 $ecom-white-batch 把这批图洗成白底主图"
