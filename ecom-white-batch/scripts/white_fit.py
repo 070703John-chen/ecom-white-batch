@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
-"""环 5 白底 · 主体占画布适配（R97 第九轮新增）
+"""主体占画布适配（白底链第 4 步）
 
 为什么要有这一步
-    229 的 composite_white() 里是 im.thumbnail((1440, 1440)) —— 只缩不放。
+    抠底那步的 composite_white() 里是 im.thumbnail((1440, 1440)) —— 只缩不放。
     生图路线出图是 1024x1024，主体像素原样贴到 1440x1440 画布上，
     包围盒占比从 0.2236 掉到 0.1124，开源上架机检直接判「商品太小」驳回。
     真实图路线本来就有「裁 bbox + 放大 + margin」，两条路线口径不一致，
-    这次把生图路线补齐成同一口径。
+    这里把生图路线补齐成同一口径。
 
 口径（不自造）
-    占比一律用开源 ecommerce-skills 的 platform-compliance/scripts/check_listing.py
-    里 subject_bbox() / bg_stats() 的算法，本模块直接 import 那个脚本本体调用，
-    不复制、不改写它。目标占比 = 竞品原图同一口径的占比，clamp 到 [0.35, 0.80]。
+    占比一律用电商上架机检的开源口径（subject_bbox() / bg_stats()），
+    该算法已逐字内联在同目录的 occupancy.py 里（不依赖任何外部路径）。
+    目标占比 = 竞品原图同一口径的占比，clamp 到 [0.35, 0.80]。
 
 画质约束
     放大倍数封顶 max_upscale（默认 2.0），放大过头宁可占比不够也不给糊图。
-    实际占比、放大倍数、裁切框全部回写 05_white_gate.json，可查可追。
+    实际占比、放大倍数、裁切框全部回写进批处理报告，可查可追。
 """
 from __future__ import annotations
 

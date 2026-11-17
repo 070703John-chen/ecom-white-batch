@@ -29,6 +29,12 @@ python scripts/white_batch.py --in <源图目录> --out <交付目录> --canvas 
 pip install -r requirements.txt
 ```
 
+**先自检**（现场合成测试图跑一遍全链，确认环境可用，退出码 0 即 OK）：
+
+```bash
+python scripts/selftest.py
+```
+
 跑完得到：交付图 + `_white_batch_report.json`（每张的状态、占比、纯白度、跳过原因）。
 
 ### 常用开关
@@ -145,11 +151,36 @@ python scripts/check_white.py --dir <交付目录>
 
 | 文件 | 作用 |
 |---|---|
+| `scripts/selftest.py` | 环境自检：合成测试图跑全链并断言闸门行为 |
 | `scripts/white_batch.py` | 主入口，一条命令跑全链 |
 | `scripts/white_matte.py` | 抠底（背景场估计 / 平场 / 连通背景 matting） |
 | `scripts/white_purge.py` | 彩色污染擦除 |
 | `scripts/white_fit.py` | 主体占位（bbox 裁切 + 闭环迭代占比） |
 | `scripts/occupancy.py` | 主体占比/背景基色的度量尺子（与开源机检同口径） |
 | `scripts/check_white.py` | 单目录白底合规硬检测（独立工具） |
+
+## 九、能力边界
+
+本 skill 只做**白底后处理**，不调 API、不生图、不联网。
+
+| 环节 | 在本 skill 内 |
+|---|---|
+| 入口挑片 / 抠底 / 去彩污 / 主体占位 / 纯白判定 | ✅ |
+| 独立白底合规检测 / 环境自检 | ✅ |
+| 竞品拆解 / 提示词 / 生图 / 整图参考 / 阵列排版 | ❌（上游层） |
+| 闸门判定 / 修复闭环 / 选优交付 / 贴字 | ❌（评价层与后期层） |
+
+接到生图链上时，**生图那一步的产物才是本 skill 的输入**；本 skill 只负责把它变成白底交付图。
+口径细节见 `references/known-limits.md`。
+
+## 十、安装位置
+
+把本目录（`ecom-white-batch/`）整个放进 agent 的 skills 目录：
+
+| Agent | 目录 |
+|---|---|
+| Codex | `~/.codex/skills/`（Windows：`%USERPROFILE%\.codex\skills\`） |
+| Claude Code | `~/.claude/skills/` |
+| OpenCode | `~/.config/opencode/skill/` |
 
 MIT License.

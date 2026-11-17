@@ -1,0 +1,9 @@
+# 运行时依赖（Python >= 3.9）
+pillow>=9.0,<13
+numpy>=1.21,<3
+
+# 有 GUI 的桌面环境用这个：
+opencv-python>=4.5,<6
+
+# 无 GUI 的服务器 / CI（Linux、Docker）改用 headless 版，二选一：
+#   pip uninstall -y opencv-python && pip install opencv-python-headless>=4.5,<5

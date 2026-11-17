@@ -38,6 +38,11 @@ import numpy as np
 from PIL import Image
 import cv2
 
+try:  # 终端编码可能是 GBK / cp936，别让中文输出把脚本打断
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+except Exception:
+    pass
+
 PIPE = os.path.dirname(os.path.abspath(__file__))
 WHITE_MIN = 247      # 与 06_check_white.py 同
 NEUTRAL_SPREAD = 6   # 与 06_check_white.py 同
